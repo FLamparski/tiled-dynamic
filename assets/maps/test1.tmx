@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="32" height="32" tilewidth="16" tileheight="16">
+ <tileset firstgid="1" name="mack-tilea1" tilewidth="16" tileheight="16">
+  <image source="../graphics/mack-tilea1.png" width="512" height="384"/>
+ </tileset>
+ <tileset firstgid="769" name="mack-tilea2" tilewidth="16" tileheight="16">
+  <image source="../graphics/mack-tilea2.png" width="512" height="384"/>
+ </tileset>
+ <layer name="Tile Layer 1" width="32" height="32">
+  <data encoding="base64" compression="zlib">
+   eJzFljdOBDEYhT3jWaAlNEg07C6hJVRQkbkGmWsQbgEN4RbQEC5AqKAiXIDQIFHwRt6VRm8s3lozLMWntf1ke7x+///7PDJmKjZmOm7/7xn2/gZVa0wN1MGgbV//C3sP4Dtm0b5IjLkEV+AazGFsHsxYpxftV7BmB+gEXY31+2N3/lW0nzD2DF7AK1jD2DpYsU4v2h/CmsNgBIw21m+efxftqGJMDCxIwB7G9sGOdXrR/gL2XARLYDlxevP8x+m9YM8qqIE6OMHYKTiyTi/a38Cem2ALbCdOb54/RtuCJP0frOuzH1i/wdxbcAfuo7zO9826zZzf50/2A+tvmPcOPsBnlNf5vpX/2a/sB9a7Ma8H9IK+OK/zffviI+t/9iv7gfUxzB0HE2Ayzut83774yPpf+Zf9wDrfdyvxkfW/8i/7gXW+71bi4zf/c5/9wDrft1pP+Z/77AfW+b5D8z/7k+ObdVUv1Hzlf45v1lW9UPOV/zm+WVf1Qs1X/uf4Zl3VCzU/1P8qn6t6UdT/Kp+rehHq/9B8rupFqP9D87mqF6H+V/mc4zu0Xij/q3zO8R1aL5T/VT7n+A6tF8r/Kp9zfIfWC/a/731e5vvfVy+y/ve9z8t8//vqRdb/vvd5me9/X73I+t/3Pi/z/e+rFyH5/y/66fkP8Q0P4PEffg/AD6/jfSA=
+  </data>
+ </layer>
+</map>
