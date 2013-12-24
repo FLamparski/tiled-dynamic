@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="32" height="32" tilewidth="16" tileheight="16">
+ <tileset firstgid="1" name="mack-tilea4" tilewidth="16" tileheight="16">
+  <image source="../graphics/mack-tilea4.png" width="512" height="480"/>
+ </tileset>
+ <tileset firstgid="961" name="mack-tilea2" tilewidth="16" tileheight="16">
+  <image source="../graphics/mack-tilea2.png" width="512" height="384"/>
+ </tileset>
+ <tileset firstgid="1729" name="future-joy-tilee" tilewidth="16" tileheight="16">
+  <image source="../graphics/future-joy-tilee.png" width="512" height="512"/>
+ </tileset>
+ <layer name="Base" width="32" height="32">
+  <data encoding="base64" compression="zlib">
+   eJzLYGRgeAbEzweATgfiFUAsycLAEAXE0XSkZYB4KdR+SyDbCoit6UwfBdp9AogjB8D/UaP+H/X/qP9H/T/q/1H/j/p/1P+D0P+uQDk3xoHzfypQLo1x4PzPysTAwME0cP5XBdqtwTSA8Q+022MA/Z8KtDtjAP0/0vM/PfwPsr8SyK4C4mo60jVQ/3sAcRsQtw8A7Q7EAIW7cag=
+  </data>
+ </layer>
+ <layer name="Decor1" width="32" height="32">
+  <data encoding="base64" compression="zlib">
+   eJztzbERQEAURdEX/NnZxuiETsjpgZwe6IQ6/GyN3N/knuTNi64EAAAAxJtMmq1stM2bu5Wt4UjSmcpvstTmuP7l7fvV77zdB/a/Bm+PFfuLt9eKfeBvD8QKDIc=
+  </data>
+ </layer>
+ <objectgroup name="PhysBodies" width="32" height="32">
+  <object name="pillarSW" x="112" y="338" width="30" height="93">
+   <properties>
+    <property name="physType" value="staticBody"/>
+   </properties>
+  </object>
+  <object name="decorColumn1" x="74" y="339" width="12" height="28">
+   <properties>
+    <property name="physType" value="staticBody"/>
+   </properties>
+  </object>
+  <object name="decorColumn2" x="43" y="338" width="12" height="28">
+   <properties>
+    <property name="physType" value="staticBody"/>
+   </properties>
+  </object>
+  <object name="decorComputer1" x="49" y="368" width="30" height="30">
+   <properties>
+    <property name="physType" value="staticBody"/>
+   </properties>
+  </object>
+  <object name="wallS" x="8" y="496" width="495" height="10">
+   <properties>
+    <property name="physType" value="staticBody"/>
+   </properties>
+  </object>
+  <object name="wallN" x="8" y="2" width="495" height="10">
+   <properties>
+    <property name="physType" value="staticBody"/>
+   </properties>
+  </object>
+  <object name="wallE" x="497" y="10" width="6" height="486">
+   <properties>
+    <property name="physType" value="staticBody"/>
+   </properties>
+  </object>
+  <object name="wallW" x="8" y="12" width="6" height="486">
+   <properties>
+    <property name="physType" value="staticBody"/>
+   </properties>
+  </object>
+  <object name="decorComputer1Light" x="61" y="376" width="3" height="4">
+   <properties>
+    <property name="blue" value="0.8"/>
+    <property name="distance" value="10"/>
+    <property name="green" value="0.7"/>
+    <property name="physType" value="pointLight"/>
+    <property name="red" value="0.3"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup name="Helpers" width="32" height="32">
+  <object name="PLAYER_START" x="60" y="448" width="4" height="5">
+   <ellipse/>
+  </object>
+ </objectgroup>
+</map>
