@@ -42,7 +42,7 @@ public class Program implements ApplicationListener {
 	    tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 1 / 8f);
 	    boxDebugRenderer = new Box2DDebugRenderer(true, false, true, true, false, false);
 	    camera = new OrthographicCamera();
-	    camera.setToOrtho(false, 40f, 30f);
+	    camera.setToOrtho(false, 160f/2f, 90f/2f);
 	    
 	    world = new World(new Vector2(0, 0), true);
 	    
@@ -149,8 +149,8 @@ public class Program implements ApplicationListener {
 		 * using either a simple config tool separate from the game, or a text
 		 * editor (it could be JSON or INI, actually)
 		 */
-		myConf.height = 600;
-		myConf.width = 800;
+		myConf.height = 720;
+		myConf.width = 1280;
 		myConf.useGL20 = true; // yes, even on cpu graphics
 		myConf.foregroundFPS = 60;
 		myConf.title = "Tiled Dynamic -- 1";
