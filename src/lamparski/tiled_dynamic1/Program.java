@@ -16,11 +16,18 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 
 public class Program implements ApplicationListener {
     
     private TiledMap tiledMap;
+    private Box2DDebugRenderer boxDebugRenderer;
     private OrthogonalTiledMapRenderer tiledMapRenderer;
     private OrthographicCamera camera;
     private RayHandler rayHandler;
@@ -33,6 +40,7 @@ public class Program implements ApplicationListener {
 	public void create() {
 	    tiledMap = new TmxMapLoader().load(Gdx.files.internal("assets/maps/test1.tmx").file().getAbsolutePath());
 	    tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 1 / 8f);
+	    boxDebugRenderer = new Box2DDebugRenderer(true, false, true, true, false, false);
 	    camera = new OrthographicCamera();
 	    camera.setToOrtho(false, 40f, 30f);
 	    
@@ -49,7 +57,30 @@ public class Program implements ApplicationListener {
 	    
 	    mRotatingLight = new ConeLight(rayHandler, 128, Color.RED, 20f, 20f, 10f, direction, 20f);
 	    
+	    addSolids();
+	    
 	    camera.update();
+	}
+	
+	private void addSolids (){
+	    BodyDef boxDef = new BodyDef();
+	    boxDef.type = BodyDef.BodyType.StaticBody;
+	    boxDef.position.set(3.5f, 7f);
+	    
+	    Body boxBody = world.createBody(boxDef);
+	    
+	    PolygonShape boxShape = new PolygonShape();
+	    boxShape.setAsBox(0.25f, 1f);
+	    
+	    boxBody.createFixture(boxShape, 1f);
+	    
+	    boxDef.position.set(10f, 9f);
+	    boxBody = world.createBody(boxDef);
+	    boxBody.createFixture(boxShape, 1f);
+	    
+	    boxDef.position.set(20f, 7f);
+        boxBody = world.createBody(boxDef);
+        boxBody.createFixture(boxShape, 1f);
 	}
 
 	@Override
@@ -91,6 +122,7 @@ public class Program implements ApplicationListener {
 	    
 	    tiledMapRenderer.setView(camera);
 	    tiledMapRenderer.render();
+	    boxDebugRenderer.render(world, camera.combined);
 	    rayHandler.updateAndRender();
 	}
 
