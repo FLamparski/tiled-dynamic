@@ -20,7 +20,7 @@
   </data>
  </layer>
  <objectgroup name="PhysBodies" width="32" height="32">
-  <object name="pillarSW" x="112" y="338" width="30" height="93">
+  <object name="pillarSW" x="112" y="338" width="31" height="67">
    <properties>
     <property name="physType" value="staticBody"/>
    </properties>

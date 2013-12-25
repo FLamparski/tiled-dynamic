@@ -1,7 +1,5 @@
 package lamparski.tiled_dynamic2;
 
-import java.util.Iterator;
-
 import box2dLight.PointLight;
 import box2dLight.RayHandler;
 
@@ -11,17 +9,20 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.maps.objects.EllipseMapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 
@@ -31,7 +32,7 @@ public class GameScreen implements Screen {
     /**
      * The scale factor for the map
      */
-    private static final float SCALE_FACTOR = 1 / 8f;
+    public static final float SCALE_FACTOR = 1 / 8f;
     /**
      * The default number of rays
      */
@@ -39,6 +40,7 @@ public class GameScreen implements Screen {
     
     /* Physics */
     private World world;
+    private Body playerBody;
     
     /* Light */
     private RayHandler rayHandler;
@@ -60,19 +62,82 @@ public class GameScreen implements Screen {
     /* Camera */
     private OrthographicCamera camera;
     
+    /* Sprite rendering */
+    private SpriteBatch batch;
+    private PlayerCharacter player;
+    
     public GameScreen() {
         System.out.println("Constructing GameScreen");
         tmxLoader = new TmxMapLoader();
-        bodyRenderer = new Box2DDebugRenderer(true, false, true, true, false, false);
+        bodyRenderer = new Box2DDebugRenderer(true, false, true, true, true, true);
         camera = new OrthographicCamera();
+        batch = new SpriteBatch();
     }
     
     public void update(float delta){
+        if(Gdx.input.isKeyPressed(Input.Keys.END)){
+            Rectangle pr = player.getBoundingRectangle();
+            System.out.printf("PLAYER: @ %f, %f wh %f, %f\n", pr.x, pr.y, pr.width, pr.height);
+            
+            //System.out.printf("+ TEXTURE: wh %d, %d\n", pt.getWidth(), pt.getHeight());
+        }
+        
         if(Gdx.input.isKeyPressed(Input.Keys.ESCAPE))
             Gdx.app.exit();
+        
+        movePlayer();
+        world.step(1 / 60f, 4, 2);
+        
         /*
-         * Other game logic (?)
+         * game logic (?)
          */
+        player.setPosition(playerBody.getPosition().x - player.getWidth() / 2f, playerBody.getPosition().y - player.getHeight() / 2f);
+        player.update();
+    }
+
+    private void movePlayer() {
+        if(Gdx.input.isKeyPressed(Input.Keys.UP)){
+            if(player.direction != PlayerCharacter.PlayerFacing.NORTH){
+                player.faceUp();
+            } else {
+                playerBody.setLinearVelocity(0f, 5f);
+                player.walk = true;
+            }
+            return;
+        }
+        
+        if(Gdx.input.isKeyPressed(Input.Keys.DOWN)){
+            if(player.direction != PlayerCharacter.PlayerFacing.SOUTH){
+                player.faceDown();
+            } else {
+                playerBody.setLinearVelocity(0f, -5f);
+                player.walk = true;
+            }
+            return;
+        }
+        
+        if(Gdx.input.isKeyPressed(Input.Keys.LEFT)){
+            if(player.direction != PlayerCharacter.PlayerFacing.WEST){
+                player.faceLeft();
+            } else {
+                playerBody.setLinearVelocity(-5f, 0f);
+                player.walk = true;
+            }
+            return;
+        }
+        
+        if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
+            if(player.direction != PlayerCharacter.PlayerFacing.EAST){
+                player.faceRight();
+            } else {
+                playerBody.setLinearVelocity(5f, 0f);
+                player.walk = true;
+            }
+            return;
+        }
+        
+        playerBody.setLinearVelocity(0f, 0f);
+        player.walk = false;
     }
 
     @Override
@@ -85,8 +150,16 @@ public class GameScreen implements Screen {
         camera.update();
         mapRenderer.setView(camera);
         mapRenderer.render();
+        
+        batch.setProjectionMatrix(camera.combined);
+        //batch.setTransformMatrix(camera.view);
+        batch.begin();
+        player.draw(batch);
+        batch.end();
+        
         rayHandler.setCombinedMatrix(camera.combined);
         rayHandler.updateAndRender();
+        
         bodyRenderer.render(world, camera.combined);
     }
 
@@ -120,21 +193,17 @@ public class GameScreen implements Screen {
         map.dispose();
         mapRenderer.dispose();
         bodyRenderer.dispose();
+        batch.dispose();
     }
     
     public void loadMap(String mapName){
         System.out.println("Loading map " + mapName);
-        /*// Dispose of the previous map and physics world
-        // -- they will be re-created.
-        map.dispose();
-        world.dispose();
-        rayHandler.dispose();*/
         
         // Load the map file itself
         map = tmxLoader.load(Gdx.files.internal("assets/maps/" + mapName).file().getAbsolutePath());
         
         // Create the world and lighting
-        world = new World(new Vector2(0, 0), true); // Reset world
+        world = new World(new Vector2(0, 0), true);
         rayHandler = new RayHandler(world);
         rayHandler.setAmbientLight(0.2f, 0.2f, 0.2f, 0.1f);
         
@@ -151,7 +220,6 @@ public class GameScreen implements Screen {
              * it finds to the system out, which may not be desired for actual
              * production.
              */
-            // System.out.printf("OBJECT %s (%s):\n", obj.getName(), obj.getClass());
             
             /*Iterator<String> keys = obj.getProperties().getKeys();
             while(keys.hasNext()){
@@ -161,10 +229,8 @@ public class GameScreen implements Screen {
             }*/
             
             String objPhysType = obj.getProperties().get("physType", String.class);
-            // System.out.printf("    physType = %s\n", objPhysType);
             
             if(objPhysType.equals("staticBody")){
-                // System.out.println("    We are a static body.");
                 if(obj instanceof RectangleMapObject){
                     if(boxDef == null)
                         boxDef = new BodyDef();
@@ -180,18 +246,10 @@ public class GameScreen implements Screen {
                     w = rect.getRectangle().width;
                     h = rect.getRectangle().height;
                     
-                    // System.out.printf("    RECT: (%f, %f, %f, %f)\n", x, y, w, h);
-                    
                     boxDef.position.set((x + w / 2f) * SCALE_FACTOR, (y + h / 2f) * SCALE_FACTOR);
                     boxShape.setAsBox((w / 2f) * SCALE_FACTOR, (h / 2f) * SCALE_FACTOR);
                     Body boxBody = world.createBody(boxDef);
-                    boxBody.createFixture(boxShape, 1f);
-                    
-                    /*System.out.printf("    Created a physics object (ox = %f, oy = %f, hw = %f, hh = %f).\n\n",
-                            (x + w / 2f) * SCALE_FACTOR,
-                            (y + h / 2f) * SCALE_FACTOR,
-                            (w / 2f) * SCALE_FACTOR,
-                            (h / 2f) * SCALE_FACTOR);*/
+                    boxBody.createFixture(boxShape, 5f);
                 }
 
                 /*if(obj instanceof EllipseMapObject){
@@ -206,7 +264,6 @@ public class GameScreen implements Screen {
             }
             
             if(objPhysType.equals("pointLight")){
-                // System.out.println("    We are a light.");
                 float x, y, r, g, b, dist;
                 x = obj.getProperties().get("x", Float.class);
                 y = obj.getProperties().get("y", Float.class);
@@ -215,13 +272,29 @@ public class GameScreen implements Screen {
                 b = Float.parseFloat(obj.getProperties().get("blue", String.class));
                 dist = Float.parseFloat(obj.getProperties().get("distance", String.class));
                 
-                /*System.out.printf("    Creating a point light at %f, %f (color: %f, %f, %f, 1f), distance = %f\n\n",
-                        x * SCALE_FACTOR, y * SCALE_FACTOR, r, g, b, dist);*/
-                
-                new PointLight(rayHandler, NUM_RAYS, new Color(r, g, b, 1f), dist, x * SCALE_FACTOR, y * SCALE_FACTOR);
+                new PointLight(rayHandler, NUM_RAYS, new Color(r, g, b, 1f), dist,
+                        x * SCALE_FACTOR, y * SCALE_FACTOR);
             }
-            
-            // System.out.println();
+        }
+        
+        MapLayer helperLayer = map.getLayers().get("Helpers");
+        for(MapObject helper : helperLayer.getObjects()){
+            if(helper.getName().equals("PLAYER_START")){
+                float x, y;
+                x = helper.getProperties().get("x", Float.class);
+                y = helper.getProperties().get("y", Float.class);
+                player = new PlayerCharacter(rayHandler, x * SCALE_FACTOR, y * SCALE_FACTOR);
+                
+                BodyDef playerBodyDef = new BodyDef();
+                playerBodyDef.type = BodyType.KinematicBody;
+                playerBodyDef.position.set(x * SCALE_FACTOR + player.getWidth() / 2f,
+                        y * SCALE_FACTOR + player.getHeight() / 2f);
+                PolygonShape playerBoundingBox = new PolygonShape();
+                playerBoundingBox.setAsBox(player.getWidth() / 2f, player.getHeight() / 2f);
+                playerBody = world.createBody(playerBodyDef);
+                playerBody.createFixture(playerBoundingBox, 1f);
+                playerBody.setUserData(player);
+            }
         }
     }
 }
