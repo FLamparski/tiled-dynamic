@@ -40,6 +40,7 @@ public class PlayerCharacter extends Sprite{
     
     private TextureAtlas atlas;
     private float flashlightDir = 0f;
+    private float timeElapsed = 0f;
     private ConeLight flashlight;
     private PlayerState state = PlayerState.STANDING;
     public PlayerFacing direction = PlayerFacing.SOUTH;
@@ -58,9 +59,32 @@ public class PlayerCharacter extends Sprite{
         System.out.printf("Creating a player character at %f, %f\n", x, y);
     }
     
-    public void update(){
+    public void update(float delta){
         flashlight.setPosition(getX() + getWidth() / 2, getY() + getHeight() / 2);
         flashlight.setDirection(calculateFlashlightDirection(direction));
+        if(walk){
+            timeElapsed += delta;
+            if (timeElapsed >= .1f) {
+                timeElapsed = 0f;
+                switch(state){
+                case STANDING:
+                    state = PlayerState.WALKING2;
+                    break;
+                case WALKING1:
+                    state = PlayerState.STANDING;
+                    break;
+                case WALKING2:
+                    state = PlayerState.WALKING1;
+                    break;
+                default:
+                    state = PlayerState.STANDING;
+                    break;
+                
+                }
+            }
+        } else {
+            state = PlayerState.STANDING;
+        }
         setRegion(atlas.findRegion(String.format(SPRITE_FSTRING, state, direction)));
     }
     

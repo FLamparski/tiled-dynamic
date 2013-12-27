@@ -38,6 +38,8 @@ public class GameScreen implements Screen {
      */
     private static final int NUM_RAYS = 128;
     
+    private static final float _BRIGHTNESS = 0.2f;
+    
     /* Physics */
     private World world;
     private Body playerBody;
@@ -69,7 +71,7 @@ public class GameScreen implements Screen {
     public GameScreen() {
         System.out.println("Constructing GameScreen");
         tmxLoader = new TmxMapLoader();
-        bodyRenderer = new Box2DDebugRenderer(true, false, true, true, true, true);
+        bodyRenderer = new Box2DDebugRenderer(false, false, false, true, true, true);
         camera = new OrthographicCamera();
         batch = new SpriteBatch();
     }
@@ -92,7 +94,7 @@ public class GameScreen implements Screen {
          * game logic (?)
          */
         player.setPosition(playerBody.getPosition().x - player.getWidth() / 2f, playerBody.getPosition().y - player.getHeight() / 2f);
-        player.update();
+        player.update(delta);
     }
 
     private void movePlayer() {
@@ -205,7 +207,7 @@ public class GameScreen implements Screen {
         // Create the world and lighting
         world = new World(new Vector2(0, 0), true);
         rayHandler = new RayHandler(world);
-        rayHandler.setAmbientLight(0.2f, 0.2f, 0.2f, 0.1f);
+        rayHandler.setAmbientLight(0.2f, 0.2f, 0.2f, _BRIGHTNESS);
         
         // Find all the physics bodies and process them
         MapLayer physBodiesLayer = map.getLayers().get("PhysBodies");
