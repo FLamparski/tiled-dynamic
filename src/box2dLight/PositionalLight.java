@@ -83,7 +83,7 @@ public abstract class PositionalLight extends Light {
 	}
 
 	@Override
-	void update() {
+	protected void update() {
 		if (body != null && !staticLight) {
 			final Vector2 vec = body.getPosition();
 			float angle = body.getAngle();

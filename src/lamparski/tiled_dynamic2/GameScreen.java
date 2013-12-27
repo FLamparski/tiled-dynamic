@@ -274,7 +274,7 @@ public class GameScreen implements Screen {
                 b = Float.parseFloat(obj.getProperties().get("blue", String.class));
                 dist = Float.parseFloat(obj.getProperties().get("distance", String.class));
                 
-                new PointLight(rayHandler, NUM_RAYS, new Color(r, g, b, 1f), dist,
+                new FlickerPointLight(rayHandler, NUM_RAYS, new Color(r, g, b, 1f), dist,
                         x * SCALE_FACTOR, y * SCALE_FACTOR);
             }
         }
